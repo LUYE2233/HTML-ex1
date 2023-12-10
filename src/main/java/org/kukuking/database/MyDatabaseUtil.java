@@ -116,16 +116,35 @@ public class MyDatabaseUtil {
     }
 
     public static void saveMessageToDB(Message message) {
-        String sql = "insert into message(messageID, parentID, publisherID, changeTime, support) VALUES ('{messageID}','{parentID}','{publisherID}','{changeTime}','{support}')";
-        sql = sql.replace("{messageID}", String.valueOf(message.messageID));
-        sql = sql.replace("{parentID}", String.valueOf(message.parentID));
-        sql = sql.replace("{publisherID}", String.valueOf(message.publisherID));
-        sql = sql.replace("{changeTime}", String.valueOf(message.changeTime));
-        sql = sql.replace("{support}", String.valueOf(message.support));
+        String sql = "insert into message(messageID, parentID, publisherID, changeTime, support, messageText) VALUES ('{messageID}','{parentID}','{publisherID}','{changeTime}','{support}','{messageText}')";
+        sql = sql.replace("{messageID}", String.valueOf(message.getMessageID()));
+        sql = sql.replace("{parentID}", String.valueOf(message.getParentID()));
+        sql = sql.replace("{publisherID}", String.valueOf(message.getPublisherID()));
+        sql = sql.replace("{changeTime}", String.valueOf(message.getChangeTime()));
+        sql = sql.replace("{support}", String.valueOf(message.getSupport()));
+        sql = sql.replace("{messageText}", message.getMessageText());
         databaseInserter(sql);
     }
 
-    public static List<Message> buildMessageFromDB() {
-        return null;
+    public static List<Message> randomMessageFromDB(int limit) {
+        List<Message> result = new ArrayList<>();
+        String sql = "select * from message where parentID = -1 order by rand() limit " + limit;
+        try (Connection connection = dataSource.getConnection();
+             Statement statement = connection.createStatement()) {
+            ResultSet rs = statement.executeQuery(sql);
+            if (rs.next()) {
+                Message message = new Message();
+                message.setMessageID(rs.getInt("messageID"));
+                message.setParentID(-1);
+                message.setPublisherID(rs.getInt("publisherID"));
+                message.setChangeTime(rs.getLong("changeTime"));
+                message.setSupport(rs.getInt("support"));
+                message.setMessageText(rs.getString("messageText"));
+                result.add(message);
+            }
+        } catch (SQLException e) {
+            LOGGER.info(e.toString());
+        }
+        return result;
     }
 }

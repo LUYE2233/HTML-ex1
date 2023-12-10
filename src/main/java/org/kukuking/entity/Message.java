@@ -1,17 +1,17 @@
 package org.kukuking.entity;
 
 public class Message {
-    public int publisherID = 0;
+    private int publisherID;
 
-    public int messageID = 0;//所有的messageID都是唯一的正整数
+    private int messageID;//所有的messageID都是唯一的正整数
 
-    public int parentID = 0;//此处为回复的message的id，如果这个帖子是顶楼，那本值为-1
+    private int parentID;//此处为回复的message的id，如果这个帖子是顶楼，那本值为-1
 
-    public long changeTime = 0;//时间戳，根据推送者修改时间系统自动生成
+    private long changeTime;//时间戳，根据推送者修改时间系统自动生成
 
-    public int support = 0;//点赞数
+    private int support;//点赞数
 
-    public String messageText = null;
+    private String messageText;
 
     public Message(int publisherID, int messageID, int parentID, String messageText) {
         this.publisherID = publisherID;
@@ -20,6 +20,9 @@ public class Message {
         this.messageText = messageText;
         this.changeTime = System.currentTimeMillis();
         this.support = 0;
+    }
+
+    public Message(){
     }
 
     public int getPublisherID() {
@@ -52,5 +55,21 @@ public class Message {
 
     public void setMessageText(String messageText) {
         this.messageText = messageText;
+    }
+
+    public long getChangeTime() {
+        return changeTime;
+    }
+
+    public void setChangeTime(long changeTime) {
+        this.changeTime = changeTime;
+    }
+
+    public int getSupport() {
+        return support;
+    }
+
+    public void setSupport(int support) {
+        this.support = support;
     }
 }

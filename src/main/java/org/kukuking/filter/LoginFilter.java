@@ -16,7 +16,7 @@ import java.util.List;
 @WebFilter("/Filter/*")
 public class LoginFilter extends HttpFilter {
     private static final List<String> exclude = List.of("/Filter/Login","/Filter/Reset","/Filter/SignUp");
-    private static final List<String> include = List.of("/Filter/Welcome");
+
 
     @Override
     protected void doFilter(HttpServletRequest req, HttpServletResponse res, FilterChain chain) throws IOException, ServletException {
@@ -25,6 +25,12 @@ public class LoginFilter extends HttpFilter {
             if(st.equals(req.getServletPath())){
                 chain.doFilter(req,res);
             }
+        }
+        User user = (User) req.getSession().getAttribute("user");
+        if(user != null){
+            chain.doFilter(req,res);
+        }else {
+            res.sendRedirect(req.getContextPath()+"/Login");
         }
         //req.getRequestDispatcher("/Filter/Login").forward(req,res);
     }
